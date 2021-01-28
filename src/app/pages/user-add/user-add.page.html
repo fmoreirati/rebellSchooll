@@ -8,22 +8,28 @@
 
     <ion-item>
         <ion-label position="floating">Nome</ion-label>
-        <ion-input type="text"></ion-input>
+        <ion-input type="text" [(ngModel)]='user.nome' name='nome'></ion-input>
     </ion-item>
 
     <ion-item>
         <ion-label position="floating">E-mail</ion-label>
-        <ion-input type="email"></ion-input>
+        <ion-input type="email" [(ngModel)]='user.email' name='email'></ion-input>
     </ion-item>
 
     <ion-item>
         <ion-label position="floating">Senha</ion-label>
-        <ion-input type="password"></ion-input>
+        <ion-input type="password" [(ngModel)]='user.senha' name='senha'></ion-input>
     </ion-item>
 
     <ion-item>
-        <ion-button expand="block">Salvar</ion-button>
+        <ion-label position="floating">Confirmar Senha</ion-label>
+        <ion-input type="password" name='confsenha'></ion-input>
+    </ion-item>
+
+    <ion-item>
+        <ion-button expand="block" (click)="salvar()">Salvar</ion-button>
         <ion-button expand="block" color="danger">Cancelar</ion-button>
     </ion-item>
 
+    <!-- {{user.nome}} - {{user.email}} - {{user.senha}} -->
 </ion-content>

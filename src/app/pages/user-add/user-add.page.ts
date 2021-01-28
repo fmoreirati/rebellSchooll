@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { User } from '../../models/user';
 
 @Component({
   selector: 'app-user-add',
@@ -7,9 +8,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UserAddPage implements OnInit {
 
+  user : User = new User();
+
   constructor() { }
 
   ngOnInit() {
+  }
+
+  salvar(){
+    console.log('Dados Salvos...', this.user);
   }
 
 }
