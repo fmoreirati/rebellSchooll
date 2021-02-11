@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { User } from '../../models/user';
 import { Storage } from '@ionic/storage';
 import { AlertController } from '@ionic/angular';
+import { UserServiceService } from '../../services/user-service.service';
 
 @Component({
   selector: 'app-user-add',
@@ -11,17 +12,29 @@ import { AlertController } from '@ionic/angular';
 
 export class UserAddPage implements OnInit {
 
-  user : User = new User();
+  user: User = new User();
 
   constructor(
     private storage: Storage,
-    public alertController: AlertController
+    public alertController: AlertController,
+    private userService: UserServiceService
   ) { }
 
   ngOnInit() {
   }
 
-  salvar(){
+  buscaCEP() {
+    this.userService.pegaCEP(this.user.cep).subscribe(
+      res => {
+        console.log(res);
+      },
+      error => {
+        console.error(error)
+      }
+    )
+  }
+
+  salvar() {
     try {
       this.storage.set('nome', this.user.nome);
       this.storage.set('email', this.user.email);
@@ -31,7 +44,7 @@ export class UserAddPage implements OnInit {
     } catch (error) {
       console.error("Erro ao salvar.", error);
     }
-    
+
   }
 
 
