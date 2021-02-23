@@ -7,8 +7,10 @@ export class User {
     complemento: string;
     
     cep: string;
-    endereco: string;
+    logradouro: string;
     bairro: string;
     cidade: string;
     uf: string;
+
+    erro:boolean = false;
 }
