@@ -35,7 +35,7 @@ export class UserAddPage implements OnInit {
             //this.user = res;
             //this.user.cep = res.cep;
             this.user.logradouro = res.logradouro;
-            this.user.cidade = res.cidade;
+            this.user.localidade = res.localidade;
             this.user.bairro = res.bairro;
             this.user.uf = res.uf;
           }
