@@ -9,7 +9,7 @@ export class User {
     cep: string;
     logradouro: string;
     bairro: string;
-    cidade: string;
+    localidade: string;
     uf: string;
 
     erro:boolean = false;
