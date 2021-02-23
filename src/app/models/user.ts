@@ -13,4 +13,5 @@ export class User {
     uf: string;
 
     erro:boolean = false;
+    aaaffffafffffffffaf
 }
