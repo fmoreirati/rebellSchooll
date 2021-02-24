@@ -49,6 +49,15 @@ export class UserAddPage implements OnInit {
 
   salvar() {
     try {
+      this.userService.add(this.user).then(
+        res =>{
+          console.log('Dados Salvos firebase...', this.user);
+        },
+        erro =>{
+          console.log('Erro...',erro);
+        }
+      )
+      ;
       this.storage.set('nome', this.user.nome);
       this.storage.set('email', this.user.email);
       this.storage.set('senha', this.user.senha);
