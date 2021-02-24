@@ -12,6 +12,10 @@ import { AppComponent } from "./app.component";
 import { IonicStorageModule } from "@ionic/storage";
 import { HttpClientModule } from "@angular/common/http";
 
+import { AngularFireModule } from '@angular/fire';
+import { AngularFirestoreModule } from "@angular/fire/firestore";
+import { environment } from "../environments/environment";
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -20,7 +24,9 @@ import { HttpClientModule } from "@angular/common/http";
     IonicModule.forRoot(),
     AppRoutingModule,
     IonicStorageModule.forRoot(),
-    HttpClientModule
+    HttpClientModule,
+    AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFirestoreModule
   ],
   providers: [
     StatusBar,
@@ -29,4 +35,4 @@ import { HttpClientModule } from "@angular/common/http";
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }
