@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from '../../models/user';
 import { Storage } from '@ionic/storage';
-import { AlertController } from '@ionic/angular';
 import { UserServiceService } from '../../services/user-service.service';
-import { ToastController } from '@ionic/angular';
+import { MsgService } from '../../services/msg.service';
 
 @Component({
   selector: 'app-user-add',
@@ -17,9 +16,10 @@ export class UserAddPage implements OnInit {
 
   constructor(
     private storage: Storage,
-    public alertController: AlertController,
+    // public alertController: AlertController,
     private userService: UserServiceService,
-    public toastController: ToastController
+    // public toastController: ToastController,
+    protected msg:MsgService
   ) { }
 
   ngOnInit() {
@@ -30,7 +30,7 @@ export class UserAddPage implements OnInit {
         res => {
           console.log(res);
           if (res.erro) {
-            this.presentToast("CEP não localizado!");
+            this.msg.presentToast("CEP não localizado!");
           } else {
             //this.user = res;
             //this.user.cep = res.cep;
@@ -62,32 +62,33 @@ export class UserAddPage implements OnInit {
       this.storage.set('email', this.user.email);
       this.storage.set('senha', this.user.senha);
       console.log('Dados Salvos...', this.user);
-      this.presentAlert();
+      this.msg.presentAlert('Alerta','Usuário cadastrado.');
     } catch (error) {
       console.error("Erro ao salvar.", error);
+      this.msg.presentAlert("Error","Não foi possivel salvar.");
     }
 
   }
 
 
-  async presentAlert() {
-    const alert = await this.alertController.create({
-      cssClass: 'my-custom-class',
-      header: 'Alerta',
-      //subHeader: 'Subtitle',
-      message: 'Usuário cadastrado.',
-      buttons: ['OK']
-    });
+  // async presentAlert() {
+  //   const alert = await this.alertController.create({
+  //     cssClass: 'my-custom-class',
+  //     header: 'Alerta',
+  //     //subHeader: 'Subtitle',
+  //     message: 'Usuário cadastrado.',
+  //     buttons: ['OK']
+  //   });
 
-    await alert.present();
-  }
+  //   await alert.present();
+  // }
 
-  async presentToast(texto: string) {
-    const toast = await this.toastController.create({
-      message: texto,
-      duration: 2000
-    });
-    toast.present();
-  }
+  // async presentToast(texto: string) {
+  //   const toast = await this.toastController.create({
+  //     message: texto,
+  //     duration: 2000
+  //   });
+  //   toast.present();
+  // }
 
 }
