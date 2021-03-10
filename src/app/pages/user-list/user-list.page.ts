@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { UserServiceService } from 'src/app/services/user-service.service';
 import { User } from '../../models/user';
 
@@ -12,7 +13,8 @@ export class UserListPage implements OnInit {
   users:User[] = [];
 
   constructor(
-    private userService:UserServiceService
+    private userService:UserServiceService,
+    private router:Router
   ) { }
 
   ngOnInit() {
@@ -24,10 +26,12 @@ export class UserListPage implements OnInit {
       erro =>{
 
       }
-    )
-      
+    )   
   }
 
+  editar(usuario){
+    this.router.navigate(['/tabs/userAdd',usuario.key])
+  }
 
 
 }

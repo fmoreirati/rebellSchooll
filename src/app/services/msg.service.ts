@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AlertController, ToastController } from '@ionic/angular';
+import { LoadingController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +9,8 @@ export class MsgService {
 
   constructor(
     public alertController: AlertController,
-    public toastController:ToastController
+    public toastController:ToastController,
+    public loadingController: LoadingController
     ) { }
 
     async presentAlert(tipo:string, texto:string) {
@@ -28,5 +30,20 @@ export class MsgService {
         duration: 2000
       });
       toast.present();
+    }
+
+    async presentLoading() {
+      const loading = await this.loadingController.create({
+        cssClass: 'my-custom-class',
+        message: 'Aguarde...',
+        //duration: 2000
+      });
+      await loading.present();  
+      // const { role, data } = await loading.onDidDismiss();
+      // console.log('Loading dismissed!');
+    }
+
+    async dismissLoading(){
+      await this.loadingController.dismiss();
     }
 }

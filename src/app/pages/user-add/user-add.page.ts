@@ -3,6 +3,7 @@ import { User } from '../../models/user';
 import { Storage } from '@ionic/storage';
 import { UserServiceService } from '../../services/user-service.service';
 import { MsgService } from '../../services/msg.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-add',
@@ -13,16 +14,30 @@ import { MsgService } from '../../services/msg.service';
 export class UserAddPage implements OnInit {
 
   user: User = new User();
+  key:string = null;
 
   constructor(
     private storage: Storage,
     // public alertController: AlertController,
     private userService: UserServiceService,
     // public toastController: ToastController,
-    protected msg:MsgService
+    protected msg:MsgService,
+    private router:Router,
+    private activadeRouter:ActivatedRoute
   ) { }
 
   ngOnInit() {
+    this.key = this.activadeRouter.snapshot.paramMap.get('key');
+    if (this.key){
+      this.userService.get(this.key).subscribe(
+        res=>{
+          this.user = res;
+        },
+        error=>{
+          console.log("ERRO:", error);
+        }
+      )
+    }
   }
 
   buscaCEP() {
@@ -49,23 +64,28 @@ export class UserAddPage implements OnInit {
 
   salvar() {
     try {
+      this.msg.presentLoading();
       this.userService.add(this.user).then(
         res =>{
-          console.log('Dados Salvos firebase...', this.user);
+          console.log('Dados Salvos firebase...', res);
+          this.storage.set('nome', this.user.nome);
+          this.storage.set('email', this.user.email);
+          this.storage.set('senha', this.user.senha);
+          this.msg.dismissLoading();
+          this.msg.presentAlert('Alerta','Usuário cadastrado.');
+          this.user = new User();
+          this.router.navigate(['']);
         },
-        erro =>{
-          console.log('Erro...',erro);
+        error =>{
+          console.error("Erro ao salvar.", error);
+        this.msg.dismissLoading();
+        this.msg.presentAlert("Error","Não foi possivel salvar.");
         }
       )
-      ;
-      this.storage.set('nome', this.user.nome);
-      this.storage.set('email', this.user.email);
-      this.storage.set('senha', this.user.senha);
-      console.log('Dados Salvos...', this.user);
-      this.msg.presentAlert('Alerta','Usuário cadastrado.');
     } catch (error) {
       console.error("Erro ao salvar.", error);
-      this.msg.presentAlert("Error","Não foi possivel salvar.");
+      this.msg.dismissLoading();
+      this.msg.presentAlert("Error","Não foi possivel conectar.");
     }
 
   }

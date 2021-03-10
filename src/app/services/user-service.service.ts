@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { User } from "../models/user";
 import { AngularFirestore } from "@angular/fire/firestore";
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: "root"
@@ -36,6 +37,20 @@ export class UserServiceService {
   }
 
   getAll(){
-    return this.firedb.collection<User>("usuarios").valueChanges()
+    //return this.firedb.collection<User>("usuarios").valueChanges()
+    return this.firedb.collection<User>("usuarios").snapshotChanges()
+    .pipe(
+      map(dados =>
+        dados.map(
+          d => ({
+            key: d.payload.doc.id, ...d.payload.doc.data()
+          })
+        )
+      )
+    )
+  }
+
+  get(key){
+    return this.firedb.collection<User>("usuarios").doc(key).valueChanges();
   }
 }
