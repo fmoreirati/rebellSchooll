@@ -53,4 +53,12 @@ export class UserServiceService {
   get(key){
     return this.firedb.collection<User>("usuarios").doc(key).valueChanges();
   }
+
+  update(user:User, key:string){
+    return this.firedb.collection<User>("usuarios").doc(key).update(user);
+  }
+
+  delete(key){
+    return this.firedb.collection("usuarios").doc(key).delete();
+  }
 }

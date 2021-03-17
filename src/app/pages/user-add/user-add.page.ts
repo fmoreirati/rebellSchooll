@@ -14,101 +14,113 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class UserAddPage implements OnInit {
 
   user: User = new User();
-  key:string = null;
+  key: string = null;
 
   constructor(
     private storage: Storage,
     // public alertController: AlertController,
     private userService: UserServiceService,
     // public toastController: ToastController,
-    protected msg:MsgService,
-    private router:Router,
-    private activadeRouter:ActivatedRoute
+    protected msg: MsgService,
+    private router: Router,
+    private activadeRouter: ActivatedRoute
   ) { }
 
   ngOnInit() {
     this.key = this.activadeRouter.snapshot.paramMap.get('key');
-    if (this.key){
-      this.userService.get(this.key).subscribe(
-        res=>{
+    this.getUser(this.key)
+  }
+
+  async getUser(key) {
+    if (key) {
+      await this.userService.get(key).subscribe(
+        res => {
           this.user = res;
+          return true;
         },
-        error=>{
+        error => {
           console.log("ERRO:", error);
+          return false;
         }
       )
     }
   }
 
   buscaCEP() {
-      this.userService.pegaCEP(this.user.cep).subscribe(
-        res => {
-          console.log(res);
-          if (res.erro) {
-            this.msg.presentToast("CEP não localizado!");
-          } else {
-            //this.user = res;
-            //this.user.cep = res.cep;
-            this.user.logradouro = res.logradouro;
-            this.user.localidade = res.localidade;
-            this.user.bairro = res.bairro;
-            this.user.uf = res.uf;
-          }
-        },
-        error => {
-          console.error(error)
+    this.userService.pegaCEP(this.user.cep).subscribe(
+      res => {
+        console.log(res);
+        if (res.erro) {
+          this.msg.presentToast("CEP não localizado!");
+        } else {
+          //this.user = res;
+          //this.user.cep = res.cep;
+          this.user.logradouro = res.logradouro;
+          this.user.localidade = res.localidade;
+          this.user.bairro = res.bairro;
+          this.user.uf = res.uf;
         }
-      )
-    }
-  
+      },
+      error => {
+        console.error(error)
+      }
+    )
+  }
+
 
   salvar() {
     try {
       this.msg.presentLoading();
-      this.userService.add(this.user).then(
-        res =>{
-          console.log('Dados Salvos firebase...', res);
-          this.storage.set('nome', this.user.nome);
-          this.storage.set('email', this.user.email);
-          this.storage.set('senha', this.user.senha);
-          this.msg.dismissLoading();
-          this.msg.presentAlert('Alerta','Usuário cadastrado.');
-          this.user = new User();
-          this.router.navigate(['']);
-        },
-        error =>{
-          console.error("Erro ao salvar.", error);
-        this.msg.dismissLoading();
-        this.msg.presentAlert("Error","Não foi possivel salvar.");
-        }
-      )
+      if (this.key) {
+        this.userService.update(this.user, this.key).then(
+          res => {
+            console.log('Dados Salvos firebase...', res);
+            this.msg.dismissLoading();
+            this.msg.presentAlert('Alerta', 'Usuário atualizado.');
+            this.user = new User();
+            this.router.navigate(['']);
+          },
+          error => {
+            console.error("Erro ao salvar.", error);
+            this.msg.dismissLoading();
+            this.msg.presentAlert("Error", "Não foi possivel atualizar.");
+          }
+        )
+      } else {
+        this.userService.add(this.user).then(
+          res => {
+            console.log('Dados Salvos firebase...', res);
+            this.storage.set('nome', this.user.nome);
+            this.storage.set('email', this.user.email);
+            this.storage.set('senha', this.user.senha);
+            this.msg.dismissLoading();
+            this.msg.presentAlert('Alerta', 'Usuário cadastrado.');
+            this.user = new User();
+            this.router.navigate(['']);
+          },
+          error => {
+            console.error("Erro ao salvar.", error);
+            this.msg.dismissLoading();
+            this.msg.presentAlert("Error", "Não foi possivel salvar.");
+          }
+        )
+      }
     } catch (error) {
       console.error("Erro ao salvar.", error);
       this.msg.dismissLoading();
-      this.msg.presentAlert("Error","Não foi possivel conectar.");
+      this.msg.presentAlert("Error", "Não foi possivel conectar.");
     }
 
   }
 
-
-  // async presentAlert() {
-  //   const alert = await this.alertController.create({
-  //     cssClass: 'my-custom-class',
-  //     header: 'Alerta',
-  //     //subHeader: 'Subtitle',
-  //     message: 'Usuário cadastrado.',
-  //     buttons: ['OK']
-  //   });
-
-  //   await alert.present();
-  // }
-
-  // async presentToast(texto: string) {
-  //   const toast = await this.toastController.create({
-  //     message: texto,
-  //     duration: 2000
-  //   });
-  //   toast.present();
-  // }
+  doRefresh(event) {
+    console.log('Begin async operation');
+    if (this.getUser(this.key)) {
+      //setTimeout(() => {
+      console.log('Async operation has ended');
+      event.target.complete();
+      //}, 2000);
+    }
+  }
 
 }
